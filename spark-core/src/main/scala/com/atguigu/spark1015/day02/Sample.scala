@@ -19,7 +19,6 @@ object Sample {
         rdd2.collect.foreach(println)
         
         sc.stop()
-        
     }
 }
 /*'
