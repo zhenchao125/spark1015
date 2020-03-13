@@ -1,4 +1,4 @@
-package com.atguigu.spark1015.day02
+package com.atguigu.spark1015.day02.single
 
 import org.apache.spark.{SparkConf, SparkContext}
 
