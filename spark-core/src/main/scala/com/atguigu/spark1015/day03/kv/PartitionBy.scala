@@ -15,14 +15,24 @@ object PartitionBy {
         val rdd1: RDD[Int] = sc.parallelize(list1, 2)
         //
         val rdd2: RDD[(Int, Int)] = rdd1.map((_, 1))
-        println(rdd2.partitioner)
+        /*println(rdd2.partitioner)
         val rdd3 = rdd2.partitionBy(new HashPartitioner(3))
-        println(rdd3.partitioner)
+        println(rdd3.partitioner)*/
+        // 如果按照value来分区
+        
+        val rdd3 = rdd2.map {
+            case (k, v) => (v, k)
+        }.partitionBy(new HashPartitioner(5))
+            .map {
+                case (k, v) => (v, k)
+            }
+        
+        
         rdd3.glom().collect().map(_.toList).foreach(println)
         sc.stop()
-        
     }
 }
+
 /*
 stage
     表示我们spark程序执行的阶段
