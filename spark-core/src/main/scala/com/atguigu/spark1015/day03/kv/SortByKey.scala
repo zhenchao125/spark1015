@@ -1,7 +1,6 @@
 package com.atguigu.spark1015.day03.kv
 
-import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{HashPartitioner, SparkConf, SparkContext}
 
 /**
  * Author atguigu
@@ -11,13 +10,15 @@ object SortByKey {
     def main(args: Array[String]): Unit = {
         val conf: SparkConf = new SparkConf().setAppName("SortByKey").setMaster("local[2]")
         val sc: SparkContext = new SparkContext(conf)
-        val rdd = sc.parallelize(Array((1, "a"), (10, "b"), (11, "c"), (4, "d"), (20, "d"), (10, "e")))
-        val rdd2: RDD[(Int, String)] = rdd.sortByKey(false)
+        val rdd = sc.parallelize(Array((1, "a"), (20, "b"), (11, "c"), (4, "d"), (3, "d"), (6, "e")))
+        //        val rdd2: RDD[(Int, String)] = rdd.sortByKey(false)
+        val rdd2 = rdd.repartitionAndSortWithinPartitions(new HashPartitioner(2))
         rdd2.collect.foreach(println)
         sc.stop()
         
     }
 }
+
 /*
 sortByKey
     1. 用来排序.
