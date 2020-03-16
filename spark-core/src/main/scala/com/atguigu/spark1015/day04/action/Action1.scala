@@ -11,9 +11,9 @@ object Action1 {
     def main(args: Array[String]): Unit = {
         val conf: SparkConf = new SparkConf().setAppName("Action1").setMaster("local[2]")
         val sc: SparkContext = new SparkContext(conf)
-        val list1 = List(30, 50, 70, 60, 10, 20)
-        val rdd1: RDD[Int] = sc.parallelize(list1, 2)
-        val arr = rdd1.takeOrdered(3)(Ordering.Int.reverse)
+        val list1 = 1 to 100000
+        val rdd1= sc.parallelize(list1, 100)
+        val arr = rdd1.map(x =>{Thread.sleep(10) ;x * x}).collect
 //        val arr = rdd1.take(10)
         /*val a = rdd1.map(x => {
             println("map...")
