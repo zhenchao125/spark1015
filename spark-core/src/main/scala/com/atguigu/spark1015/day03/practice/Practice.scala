@@ -57,7 +57,7 @@ object Practice {
 => RDD[(省份, (广告, 10))]  groupByKey
 => RDD[(省份, Iterable((广告1, 10), (广告2, 7), (广告3. 5), ...))] 做map 只对内部的list排序, 取前3
 RDD[(省份, Iterable((广告1, 10), (广告2, 7), (广告3. 5)))]
- 
+
 
 
 
