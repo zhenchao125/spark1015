@@ -1,6 +1,7 @@
 package com.atguigu.spark1015.day05.add
 
 import org.apache.spark.rdd.RDD
+import org.apache.spark.util.LongAccumulator
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -13,14 +14,15 @@ object Add1 {
         val sc: SparkContext = new SparkContext(conf)
         val list1 = List(30, 50, 70, 60, 10, 20)
         val rdd1: RDD[Int] = sc.parallelize(list1, 2)
+    
+        val acc: LongAccumulator = sc.longAccumulator
         
-        var a = 0
         val rdd2: RDD[Int] = rdd1.map(x => {
-            a += 1
+            acc.add(1)
             x
         })
         rdd2.collect
-        println(a)
+        println(acc.value)
         sc.stop()
     }
 }
