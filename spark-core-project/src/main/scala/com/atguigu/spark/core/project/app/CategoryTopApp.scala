@@ -35,7 +35,7 @@ object CategoryTopApp {
             .take(10)
         
         result.foreach(println)
-        // 4.写到jdbc中
+        // 4.写到jdbc中 TODO
         
     }
 }

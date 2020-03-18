@@ -1,5 +1,6 @@
 # Project exclude paths
 /spark-core/target/
+/spark-core-project/target/
 .idea/
 spark-core/src/test/
 spark1015.iml
