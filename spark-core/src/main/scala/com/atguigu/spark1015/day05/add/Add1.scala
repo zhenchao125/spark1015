@@ -15,7 +15,7 @@ object Add1 {
         val list1 = List(30, 50, 70, 60, 10, 20)
         val rdd1: RDD[Int] = sc.parallelize(list1, 2)
     
-        val acc: LongAccumulator = sc.longAccumulator
+        val acc: LongAccumulator = sc.longAccumulator("one")
         
         val rdd2: RDD[Int] = rdd1.map(x => {
             acc.add(1)
@@ -23,6 +23,7 @@ object Add1 {
         })
         rdd2.collect
         println(acc.value)
+        Thread.sleep(10000000)
         sc.stop()
     }
 }
