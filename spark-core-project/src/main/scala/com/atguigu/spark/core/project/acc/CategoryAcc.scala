@@ -17,7 +17,7 @@ class CategoryAcc extends AccumulatorV2[UserVisitAction, mutable.Map[(String, St
     // 复制累加器
     override def copy(): AccumulatorV2[UserVisitAction, mutable.Map[(String, String), Long]] = {
         val acc = new CategoryAcc
-        map.synchronized {
+        map.synchronized {  // synchronized(锁){}
             acc.map ++= map // 可变集合, 不应该直接赋值, 应该进行数据的复制
         }
         acc

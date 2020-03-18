@@ -30,11 +30,13 @@ object CategoryTopApp {
                 )
         }.toArray
         // 3. 对数据进行排序取top10
-        val result = categoryCountInfoArray
+        val result: Array[CategoryCountInfo] = categoryCountInfoArray
             .sortBy(info => (-info.clickCount, -info.orderCount, -info.payCount))
             .take(10)
         
-        result.foreach(println)
+//        result.foreach(println)
+        // 4. 返回top10品类
+        result
         // 4.写到jdbc中 TODO
         
     }
