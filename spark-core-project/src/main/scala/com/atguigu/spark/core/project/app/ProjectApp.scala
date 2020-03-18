@@ -38,7 +38,7 @@ object ProjectApp {
         // 需求1:
         val categoryTop10 = CategoryTopApp.calcCategoryTop10(sc, userVisitActionRDD)
         // 需求2: top10品类的top10session
-        CategorySessionTopApp.statCategorySessionTop10_3(sc,categoryTop10, userVisitActionRDD)
+        CategorySessionTopApp.statCategorySessionTop10_4(sc,categoryTop10, userVisitActionRDD)
         
         // 关闭项目(sc)
         sc.stop()
