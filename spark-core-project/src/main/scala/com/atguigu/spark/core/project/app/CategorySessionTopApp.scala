@@ -143,10 +143,12 @@ object CategorySessionTopApp {
                     if (set.size > 10) set = set.take(10)
                 
             }
-            set.map((categoryId, _)).toIterator
+//            set.map((categoryId, _)).toIterator
+            Iterator((categoryId, set.toList))
         })
         result.collect.foreach(println)
         
+        Thread.sleep(1000000)
     }
 }
 
