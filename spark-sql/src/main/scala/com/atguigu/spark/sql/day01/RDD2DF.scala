@@ -1,5 +1,7 @@
 package com.atguigu.spark.sql.day01
 
+import org.apache
+import org.apache.spark
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 
@@ -25,6 +27,7 @@ object RDD2DF {
         //        rdd.toDF.show
         
         rdd.toDF("n", "a").show
+        
         spark.stop()
     }
 }
