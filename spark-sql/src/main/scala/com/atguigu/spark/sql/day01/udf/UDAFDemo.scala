@@ -21,7 +21,7 @@ object UDAFDemo {
         val df = spark.read.json("c:/users.json")
         df.createOrReplaceTempView("user")
         // 注册聚合函数
-        spark.udf.register("myAvg", new MySum)
+        spark.udf.register("myAvg", new MyAvg)
         spark.sql("select myAvg(age) from user").show
         spark.close()
     }
@@ -50,20 +50,35 @@ class MyAvg extends UserDefinedAggregateFunction {
     
     // 分区内聚合
     override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+        input match {
+            case Row(age: Double) =>
+                buffer(0) = buffer.getDouble(0) + age
+                buffer(1) = buffer.getLong(1) + 1L
+            case _ =>
+        }
         
-        // input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
+        /*// input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
         if (!input.isNullAt(0)) { // 考虑到传字段可能是null
             val v = input.getAs[Double](0) // getDouble(0)
             buffer(0) = buffer.getDouble(0) + v
             buffer(1) = buffer.getLong(1) + 1L
-        }
+        }*/
     }
     
     // 分区间的聚合
     override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit = {
+        buffer2 match {
+            case Row(sum: Double, count: Long) =>
+                buffer1(0) = buffer1.getDouble(0) + sum
+                buffer1(1) = buffer1.getLong(1) + count
+            
+            case _ =>
+        }
+        
+        
         // 把buffer1和buffer2 的缓冲弄聚合到一起, 然后再把值写回到buffer1
-        buffer1(0) = buffer1.getDouble(0) + buffer2.getDouble(0)
-        buffer1(1) = buffer1.getLong(1) + buffer2.getLong(1)
+        /*buffer1(0) = buffer1.getDouble(0) + buffer2.getDouble(0)
+        buffer1(1) = buffer1.getLong(1) + buffer2.getLong(1)*/
     }
     
     // 返回最终的输出值
@@ -92,17 +107,25 @@ class MySum extends UserDefinedAggregateFunction {
     // 分区内聚合
     override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
         
-        // input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
+        input match {
+            case Row(age: Double) =>
+                buffer(0) = buffer.getDouble(0) + age
+            
+            case _ =>
+        }
+        
+        /*// input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
         if (!input.isNullAt(0)) { // 考虑到传字段可能是null
             val v = input.getAs[Double](0) // getDouble(0)
             buffer(0) = buffer.getDouble(0) + v
-        }
+        }*/
     }
     
     // 分区间的聚合
     override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit = {
         // 把buffer1和buffer2 的缓冲弄聚合到一起, 然后再把值写回到buffer1
         buffer1(0) = buffer1.getDouble(0) + buffer2.getDouble(0)
+        
     }
     
     // 返回最终的输出值
