@@ -37,7 +37,5 @@ object JDBCWrite {
             .jdbc(url, "user1016", props)
         
         spark.close()
-        
-        
     }
 }
