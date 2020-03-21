@@ -1,8 +1,8 @@
 package com.atguigu.spark.sql.day01.udf
 
-import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
-import org.apache.spark.sql.types.{DataType, DoubleType, LongType, StructField, StructType}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.{Row, SparkSession}
 
 import scala.collection.immutable.Nil
 
@@ -18,11 +18,10 @@ object UDAFDemo {
             .master("local[*]")
             .appName("UDAFDemo")
             .getOrCreate()
-        import spark.implicits._
         val df = spark.read.json("c:/users.json")
         df.createOrReplaceTempView("user")
         // 注册聚合函数
-        spark.udf.register("myAvg",  new MyAvg)
+        spark.udf.register("myAvg", new MySum)
         spark.sql("select myAvg(age) from user").show
         spark.close()
     }
@@ -30,11 +29,11 @@ object UDAFDemo {
 
 class MyAvg extends UserDefinedAggregateFunction {
     // 输入的数据类型  10.1 12.2 100
-    override def inputSchema: StructType = StructType(StructField("ele", DoubleType)::Nil)
+    override def inputSchema: StructType = StructType(StructField("ele", DoubleType) :: Nil)
     
     // 缓冲区的类型
     override def bufferSchema: StructType =
-        StructType(StructField("sum", DoubleType)::StructField("count", LongType)::Nil)
+        StructType(StructField("sum", DoubleType) :: StructField("count", LongType) :: Nil)
     
     // 最终聚合解结果的类型
     override def dataType: DataType = DoubleType
@@ -45,15 +44,16 @@ class MyAvg extends UserDefinedAggregateFunction {
     // 对缓冲区初始化
     override def initialize(buffer: MutableAggregationBuffer): Unit = {
         // 在缓冲集合中初始化和
-        buffer(0) = 0D   // 等价于 buffer.update(0, 0D)
+        buffer(0) = 0D // 等价于 buffer.update(0, 0D)
         buffer(1) = 0L
     }
     
     // 分区内聚合
     override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+        
         // input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
-        if (!input.isNullAt(0)) {  // 考虑到传字段可能是null
-            val v = input.getAs[Double](0)  // getDouble(0)
+        if (!input.isNullAt(0)) { // 考虑到传字段可能是null
+            val v = input.getAs[Double](0) // getDouble(0)
             buffer(0) = buffer.getDouble(0) + v
             buffer(1) = buffer.getLong(1) + 1L
         }
@@ -72,10 +72,10 @@ class MyAvg extends UserDefinedAggregateFunction {
 
 class MySum extends UserDefinedAggregateFunction {
     // 输入的数据类型  10.1 12.2 100
-    override def inputSchema: StructType = StructType(StructField("ele", DoubleType)::Nil)
+    override def inputSchema: StructType = StructType(StructField("ele", DoubleType) :: Nil)
     
     // 缓冲区的类型
-    override def bufferSchema: StructType = StructType(StructField("sum", DoubleType)::Nil)
+    override def bufferSchema: StructType = StructType(StructField("sum", DoubleType) :: Nil)
     
     // 最终聚合解结果的类型
     override def dataType: DataType = DoubleType
@@ -86,14 +86,15 @@ class MySum extends UserDefinedAggregateFunction {
     // 对缓冲区初始化
     override def initialize(buffer: MutableAggregationBuffer): Unit = {
         // 在缓冲集合中初始化和
-        buffer(0) = 0D   // 等价于 buffer.update(0, 0D)
+        buffer(0) = 0D // 等价于 buffer.update(0, 0D)
     }
     
     // 分区内聚合
     override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+        
         // input是指的使用聚合函数的时候, 缓过来的参数封装到了Row
-        if (!input.isNullAt(0)) {  // 考虑到传字段可能是null
-            val v = input.getAs[Double](0)  // getDouble(0)
+        if (!input.isNullAt(0)) { // 考虑到传字段可能是null
+            val v = input.getAs[Double](0) // getDouble(0)
             buffer(0) = buffer.getDouble(0) + v
         }
     }
