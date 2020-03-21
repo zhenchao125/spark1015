@@ -1,5 +1,7 @@
 package com.atguigu.spark.sql.project
 
+import java.util.Properties
+
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -14,7 +16,6 @@ object SqlApp {
             .appName("SqlApp")
             .enableHiveSupport()
             .getOrCreate()
-        import spark.implicits._
         spark.udf.register("remark", new CityRemarkUDAF)
         
         // 去执行sql, 从hive查询数据
@@ -54,6 +55,10 @@ object SqlApp {
               |""".stripMargin).createOrReplaceTempView("t3")
         
         
+        val props = new Properties()
+        props.put("user", "root")
+        props.put("password", "aaaaaa")
+        
         spark.sql(
             """
               |select
@@ -63,11 +68,18 @@ object SqlApp {
               |    remark
               |from t3
               |where rk<=3
-              |""".stripMargin).show(1000, false)
+              |""".stripMargin)
+            .coalesce(1)
+            .write
+            .mode("overwrite")
+            .jdbc("jdbc:mysql://hadoop102:3306/rdd?useUnicode=true&characterEncoding=utf8", "sql1015", props)
+        
+        // 把结果写入到mysql中
         
         spark.close()
     }
 }
+
 /*
 各区域热门商品 Top3
 这里的热门商品是从点击量的维度来看的.
