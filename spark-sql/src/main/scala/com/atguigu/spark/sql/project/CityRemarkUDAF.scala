@@ -9,8 +9,10 @@ import org.apache.spark.sql.types._
 /**
  * Author atguigu
  * Date 2020/3/21 14:35
+ *
  */
 class CityRemarkUDAF extends UserDefinedAggregateFunction {
+    
     // 输入的数据类型   "北京", "天津"  String
     override def inputSchema: StructType = StructType(Array(StructField("city", StringType)))
     
