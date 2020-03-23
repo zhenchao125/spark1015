@@ -15,7 +15,8 @@ object WordCount1 {
         // 2. 从数据源创建一个流:  socket, rdd队列, 自定义接收器,    kafka(重点)
         val sourceStream = ssc.socketTextStream("hadoop102", 9999)
         // 3. 对流做各种转换
-        val result = sourceStream.flatMap(_.split(" ")).map((_, 1)).reduceByKey(_ + _)
+//        val result = sourceStream.flatMap(_.split(" ")).map((_, 1)).reduceByKey(_ + _)
+        val result = sourceStream.flatMap(x => {Thread.sleep(10000); x.split(" ")}).map((_, 1)).reduceByKey(_ + _)
         // 4. 行动算子 print  foreach foreachRDD
         result.print()  // 把结果打印在控制台
         // 5. 启动流
