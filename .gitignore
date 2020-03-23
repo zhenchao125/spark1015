@@ -5,3 +5,4 @@
 .idea/
 spark-core/src/test/
 spark1015.iml
+/spark-streaming/target
