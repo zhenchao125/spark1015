@@ -28,6 +28,5 @@ object WordCount2 {
         }
         
         ssc.awaitTermination()
-        
     }
 }
