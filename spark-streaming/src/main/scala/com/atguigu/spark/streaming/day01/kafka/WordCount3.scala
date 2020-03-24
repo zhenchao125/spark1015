@@ -85,7 +85,7 @@ object WordCount3 {
             ssc,
             params,
             readOffsets(),
-            (handler: MessageAndMetadata[String, String]) => handler.message()
+            (handler: MessageAndMetadata[String, String]) => handler.message() // 从kafka读到数据的value
         )
         sourceStream
             .flatMap(_.split("\\W+"))
