@@ -34,6 +34,7 @@ object AreaTopApp extends App {
                 // 2. 写数据到redis
                 
                 // 3. 关闭到redis的连接
+                
             })
         })
     }
