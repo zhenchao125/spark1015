@@ -23,14 +23,17 @@ object MyKafkaUtils {
     
     /**
      * 根据传入的参数, 返回从kafka得到的流
+     *
      * @param ssc
      * @param topics
      * @return
      */
     def getKafkaSteam(ssc: StreamingContext, topics: String*) =
-        KafkaUtils.createDirectStream[String, String](
-            ssc,
-            PreferConsistent, // 标配
-            Subscribe[String, String](topics.toIterable, kafkaParams)
-        ).map(_.value())
+        KafkaUtils
+            .createDirectStream[String, String](
+                ssc,
+                PreferConsistent, // 标配
+                Subscribe[String, String](topics.toIterable, kafkaParams))
+            .map(_.value())
+        
 }
