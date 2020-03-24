@@ -41,8 +41,8 @@ object AreaTopApp extends App {
                         val key = "area:ads:count" + day
                         val field = area
                         // 把集合转换成json字符串  json4s
-                        // 专门用于把集合转成字符串(样例类不行)
                         import org.json4s.JsonDSL._
+                        // 专门用于把集合转成字符串(样例类不行)
                         val value = JsonMethods.compact(JsonMethods.render(adsCountList))
                         client.hset(key, field, value)
                 }
