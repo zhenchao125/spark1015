@@ -10,6 +10,7 @@ trait App {
     def main(args: Array[String]): Unit = {
         val conf: SparkConf = new SparkConf().setMaster("local[*]").setAppName("App")
         val ssc = new StreamingContext(conf, Seconds(3))
+        ssc.checkpoint("./ck1015")
         val sourceStream: DStream[String] = MyKafkaUtils.getKafkaSteam(ssc, "ads_log1015")
         
         val adsInfoStream: DStream[AdsInfo] = sourceStream.map(s => {
