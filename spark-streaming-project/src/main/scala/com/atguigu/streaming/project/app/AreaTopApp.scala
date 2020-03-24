@@ -1,7 +1,10 @@
 package com.atguigu.streaming.project.app
 
 import com.atguigu.streaming.project.bean.AdsInfo
+import com.atguigu.streaming.project.util.RedisUtil
 import org.apache.spark.streaming.dstream.DStream
+import org.json4s.jackson.JsonMethods
+import redis.clients.jedis.Jedis
 
 /**
  * Author atguigu
@@ -22,21 +25,33 @@ object AreaTopApp extends App {
             .groupByKey()
         
         // 3 4. 每组内进行排序取前3
-        val result = dayAreaGrouped.map {
+        val result: DStream[((String, String), List[(String, Int)])] = dayAreaGrouped.map {
             case (key, it: Iterable[(String, Int)]) =>
                 (key, it.toList.sortBy(-_._2).take(3))
         }
         // 5. 把数据写入到redis
-        result.foreachRDD(rdd => {
-            rdd.foreachPartition(it => {
+        /*result.foreachRDD(rdd => {
+            rdd.foreachPartition((it: Iterator[((String, String), List[(String, Int)])]) => {
                 // 1. 建立到redis的连接
-                
+                val client: Jedis = RedisUtil.getClient
                 // 2. 写数据到redis
-                
+                it.foreach {
+                    // ((2020-03-24,华中),List((3,14), (1,12), (2,8)))
+                    case ((day, area), adsCountList) =>
+                        val key = "area:ads:count" + day
+                        val field = area
+                        // 把集合转换成json字符串  json4s
+                        // 专门用于把集合转成字符串(样例类不行)
+                        import org.json4s.JsonDSL._
+                        val value = JsonMethods.compact(JsonMethods.render(adsCountList))
+                        client.hset(key, field, value)
+                }
                 // 3. 关闭到redis的连接
-                
+                client.close()  // 其实是把这个客户端还给连接池
             })
-        })
+        })*/
+        import com.atguigu.streaming.project.util.RealUtil._
+        result.saveToRedis
     }
 }
 
