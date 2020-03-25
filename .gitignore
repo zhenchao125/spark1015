@@ -1,11 +1,7 @@
 # Project exclude paths
-/spark-core/target/
-/spark-core-project/target/
-/spark-sql/target/
 .idea/
 spark-core/src/test/
 spark1015.iml
-/spark-streaming/target
 /data-mock/target
-/spark-streaming-project/target
 /ck1015
+*/target
