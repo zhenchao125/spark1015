@@ -27,7 +27,7 @@ object LastHourApp extends App {
             // 4. 写入到redis中
             .foreachRDD(rdd => {
                 rdd.foreachPartition((it: Iterator[(String, Iterable[(String, Int)])]) => {
-                    if (it.nonEmpty) { // 只是判断是否有下一个元素, 指针不会跳过这元素
+                    if (it.nonEmpty) { // hasNext只是判断是否有下一个元素, 指针不会跳过这元素
                         // 1. 先建立到redis连接
                         val client: Jedis = RedisUtil.getClient
                         // 2. 写元素到redis
