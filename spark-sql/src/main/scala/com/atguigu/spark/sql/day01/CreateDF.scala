@@ -17,6 +17,7 @@ object CreateDF {
         // 3. 对DF做操作(sql)
         // 3.1 创建临时表
         df.createOrReplaceTempView("user")
+        df.cache()
         // 3.2 查询临时表
         spark.sql(
             """
